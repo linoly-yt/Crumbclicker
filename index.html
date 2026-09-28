@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crumbly Games – Free Browser Games: Crumb Clicker, Memory &amp; more</title>
+<meta name="description" content="Free browser games, no download needed: Crumb Clicker with upgrades and rebirths, Memory and a Reaction Test.">
+<style>
+:root{--ink:#2b1b12;--sky:#8fd6f5;--paper:#fff6dc;--sun:#ffd23f;--red:#ff5a4d;--grn:#5fd068;--brn:#6b4a33;--f:"Chalkboard SE","Marker Felt","Comic Neue","Comic Sans MS","Trebuchet MS",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sky) radial-gradient(circle,#ffffff66 14%,transparent 15%) 0 0/64px 64px;color:var(--ink);font-family:var(--f);line-height:1.45}
+a{color:#b3300f;font-weight:700}
+header{padding:22px 16px 4px;text-align:center}
+h1{margin:0;font-size:clamp(2.2rem,7vw,3.8rem);color:var(--sun);-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;text-shadow:4px 4px 0 var(--ink);display:inline-block;transform-origin:50% 80%;animation:sway 4s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-3deg) translateX(-4px)}50%{transform:rotate(3deg) translateX(4px)}}
+header p{margin:10px auto 0;max-width:56ch;font-weight:700}
+nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:16px}
+nav button,.btn{font:inherit;font-weight:700;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:14px 18px 12px 16px;padding:8px 16px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .1s,box-shadow .1s}
+nav button:hover,.btn:hover{transform:translate(-1px,-2px);box-shadow:4px 5px 0 var(--ink)}
+nav button:active,.btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+nav button[aria-selected=true]{background:var(--sun)}
+:focus-visible{outline:4px dashed var(--red);outline-offset:3px}
+main{max-width:1000px;margin:0 auto;padding:0 14px 30px}
+section{display:none}section.on{display:block}
+.ad{margin:16px auto;min-height:90px;max-width:728px;border:3px dashed var(--ink);border-radius:14px;background:#ffffff88;color:var(--brn);font-size:.85rem;display:flex;align-items:center;justify-content:center;text-align:center}
+.ad:empty::before{content:"Ad space (loads after cookie consent)"}
+.cc{display:grid;grid-template-columns:1fr 1.1fr;gap:18px}
+@media(max-width:760px){.cc{grid-template-columns:1fr}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:22px 28px 20px 26px;box-shadow:6px 6px 0 var(--ink);padding:16px}
+#acct{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px;font-weight:700}
+.stage{text-align:center;position:relative;overflow:hidden;min-height:360px}
+.count{font-size:2.4rem;font-weight:800;color:var(--red);-webkit-text-stroke:1px var(--ink)}
+.sub{color:var(--brn);font-size:.95rem}
+#crumb{width:230px;height:230px;padding:0;border:0;border-radius:50%;background:none;cursor:pointer;margin:10px auto;display:block;animation:bob 4s ease-in-out infinite;filter:drop-shadow(6px 8px 0 rgba(43,27,18,.35));touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent}
+#crumb svg{width:100%;height:100%;display:block;pointer-events:none}
+#crumb.pop svg{animation:pop .14s}
+#crumb:hover .mouth{d:path("M72 122 Q100 156 128 122 Q100 134 72 122Z")}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-9deg)}50%{transform:translateY(-8px) rotate(9deg)}}
+@keyframes pop{50%{transform:scale(.9)}}
+.fl{position:absolute;pointer-events:none;font-weight:800;font-size:1.3rem;color:#fff;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;animation:up .9s forwards}
+@keyframes up{to{transform:translateY(-80px) rotate(-8deg);opacity:0}}
+.bit{position:absolute;width:9px;height:9px;border-radius:40% 60% 50% 50%;background:#5a3218;pointer-events:none;animation:bit .6s forwards}
+@keyframes bit{to{transform:translate(var(--x),var(--y)) rotate(200deg);opacity:0}}
+#gold{position:absolute;font-size:46px;background:none;border:0;cursor:pointer;animation:gl 1s ease-in-out infinite alternate;z-index:2}
+@keyframes gl{to{transform:scale(1.25) rotate(12deg)}}
+.shop h3{margin:14px 0 6px;color:#d1481f}
+.it{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;margin:7px 0;padding:8px 12px;border:3px solid var(--ink);border-radius:12px 16px 12px 14px;background:#fff;color:var(--ink);font:inherit;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .1s,box-shadow .1s}
+.it:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;background:#efe3c4}
+.it:not(:disabled):hover{transform:translate(-1px,-2px);background:#fff3b8}
+.it:not(:disabled):active{transform:translate(3px,3px);box-shadow:none}
+.it small{color:var(--brn);display:block}
+.it b{color:#c2410c;white-space:nowrap}
+.rb{background:var(--red);color:#fff;font-weight:800;justify-content:center;text-align:center;-webkit-text-stroke:0}
+.rb:disabled{background:#efe3c4;color:var(--brn)}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:420px;margin:12px auto}
+.mc{aspect-ratio:1;border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:3px 3px 0 var(--ink);font-size:2.2rem;cursor:pointer;transition:transform .3s;color:transparent}
+.mc.f{background:var(--sun);color:#000;transform:rotate(-4deg)}
+.mc.m{background:var(--grn);color:#000;cursor:default;box-shadow:none}
+footer{text-align:center;padding:24px 14px;font-weight:700}
+#cb{position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:4px solid var(--ink);padding:14px;z-index:9;display:none}
+#cb p{margin:0 auto 10px;max-width:800px;font-size:.9rem}
+#cb div{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+<h1>Crumbly Games</h1>
+<p>Free browser games. No download, no sign-up. Your progress is saved on your device.</p>
+</header>
+<nav role="tablist" aria-label="Games">
+<button role="tab" aria-selected="true" data-t="cc">🍪 Crumb Clicker</button>
+<button role="tab" aria-selected="false" data-t="mem">🧠 Memory</button>
+<button role="tab" aria-selected="false" data-t="rx">⚡ Reaction Test</button>
+</nav>
+<main>
+<div class="ad" id="ad1"></div>
+
+<section id="cc" class="on">
+<div class="card" id="acct"></div>
+<div class="cc">
+<div class="card stage" id="stage">
+<div class="count" id="cnt">0</div>
+<div class="sub"><span id="cps">0</span> crumbs per second · <span id="cpc">1</span> per click</div>
+<button id="crumb" aria-label="Click the cookie"><svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="90" fill="#e0a24f" stroke="#2b1b12" stroke-width="6"/><path d="M40 70 Q60 38 100 32" fill="none" stroke="#f6cf8a" stroke-width="8" stroke-linecap="round"/><g fill="#5a3218" stroke="#2b1b12" stroke-width="3"><ellipse cx="55" cy="105" rx="10" ry="8" transform="rotate(-20 55 105)"/><ellipse cx="150" cy="60" rx="11" ry="8" transform="rotate(25 150 60)"/><ellipse cx="148" cy="128" rx="10" ry="8"/><ellipse cx="88" cy="55" rx="9" ry="7"/><ellipse cx="100" cy="165" rx="10" ry="7" transform="rotate(15 100 165)"/></g><g stroke="#2b1b12" stroke-width="4"><ellipse cx="76" cy="90" rx="13" ry="16" fill="#fff"/><ellipse cx="124" cy="90" rx="13" ry="16" fill="#fff"/></g><circle cx="79" cy="93" r="6" fill="#2b1b12"/><circle cx="121" cy="93" r="6" fill="#2b1b12"/><circle cx="60" cy="122" r="9" fill="#ff8a8a" opacity=".7"/><circle cx="140" cy="122" r="9" fill="#ff8a8a" opacity=".7"/><path class="mouth" d="M78 122 Q100 148 122 122 Q100 130 78 122Z" fill="#7a2f1a" stroke="#2b1b12" stroke-width="4" stroke-linejoin="round"/></svg></button>
+<div class="sub">Rebirths: <b id="rbn">0</b> · Bonus: <b id="rbm">+0%</b></div>
+</div>
+<div class="card shop">
+<button class="it rb" id="rebirth"></button>
+<h3>Buildings</h3><div id="bld"></div>
+<h3>Click upgrades</h3><div id="clk"></div>
+<h3>Production upgrades</h3><div id="glb"></div>
+<p class="sub"><button class="btn" id="reset">Delete save</button></p>
+</div>
+</div>
+<p class="sub">How to play: Click the cookie, buy buildings to bake automatically and catch golden stars for bonuses. Once you have baked 1 million crumbs in one run, you can rebirth: you start over but keep a permanent bonus.</p>
+</section>
+
+<section id="mem" class="card">
+<h2>Memory</h2>
+<p class="sub">Find all the pairs. Moves: <b id="mv">0</b></p>
+<div class="mem" id="mg"></div>
+<p style="text-align:center"><button class="btn" id="mn">New game</button></p>
+</section>
+
+<section id="rx" class="card">
+<h2>Reaction Test</h2>
+<p class="sub">Wait for the box to turn green, then click as fast as you can. Best time: <b id="best">–</b></p>
+<button id="rxb" style="width:100%;min-height:220px;border:4px solid #2b1b12;box-shadow:5px 5px 0 #2b1b12;border-radius:18px;font:800 1.5rem var(--f);color:#fff;background:#ff5a4d;cursor:pointer"></button>
+</section>
+
+<div class="ad" id="ad2"></div>
+</main>
+<footer>
+<a href="impressum.html">Legal Notice (Impressum)</a> · <a href="datenschutz.html">Privacy Policy</a> · <a href="#" id="cs">Cookie settings</a>
+<p>© 2026 Crumbly Games</p>
+</footer>
+<div id="cb" role="dialog" aria-label="Cookie settings">
+<p>We use cookies for advertising (Google AdSense). They are only loaded with your consent. Read more in our <a href="datenschutz.html">Privacy Policy</a>. Game progress is stored locally on your device.</p>
+<div><button class="btn" id="ok" style="background:var(--grn)">Accept all</button><button class="btn" id="no">Necessary only</button></div>
+</div>
+
+<script>
+// ===== Settings =====
+const ADSENSE_ID="ca-pub-XXXXXXXXXXXXXXXX"; // <- enter your AdSense publisher ID here
+const $=s=>document.querySelector(s);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+// ===== Tabs =====
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x===b));
+ document.querySelectorAll("main section").forEach(s=>s.classList.toggle("on",s.id===b.dataset.t));
+});
+
+// ===== Cookie-Banner & AdSense (erst nach Zustimmung) =====
+function loadAds(){
+ if(ADSENSE_ID.includes("XXXX")||document.getElementById("adsjs"))return;
+ const s=document.createElement("script");s.id="adsjs";s.async=true;s.crossOrigin="anonymous";
+ s.src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client="+ADSENSE_ID;
+ document.head.appendChild(s);
+ // Later: put your ad units (<ins class="adsbygoogle" ...>) into #ad1 / #ad2
+}
+function consent(){const c=store.get("consent");if(c==="all")loadAds();$("#cb").style.display=c?"none":"block"}
+$("#ok").onclick=()=>{store.set("consent","all");consent()};
+$("#no").onclick=()=>{store.set("consent","min");consent()};
+$("#cs").onclick=e=>{e.preventDefault();$("#cb").style.display="block"};
+consent();
+
+// ===== Crumb Clicker =====
+const B=[["Crumb Spoon",15,1,"🥄"],["Oven",100,6,"🔥"],["Bakery",1100,40,"🥖"],["Factory",12000,220,"🏭"],["Flour Mill",130000,1200,"🌾"],["Space Bakery",1.4e6,7000,"🚀"],["Time Machine",20e6,40000,"⏳"],["Crumb Portal",330e6,250000,"🌀"]];
+const CU=[["Strong Fingers",50],["Butter Hands",500],["Sugar Fist",5000],["Choco Click",50000],["Diamond Fingers",500000]];
+const GU=[["Better Recipes",2000],["Spice Blend",100000],["Secret Ingredient",4e6],["Galactic Dough",2e8]];
+const RB_AT=1e6;
+let S={c:0,run:0,all:0,b:B.map(()=>0),cu:0,gu:0,rp:0,rebirths:0};
+try{const l=store.get("cc");if(l)S=Object.assign(S,JSON.parse(l))}catch(e){}
+const rbMult=()=>1+S.rp;
+const cost=i=>Math.floor(B[i][1]*Math.pow(1.12,S.b[i]));
+const clickPow=()=>Math.pow(3,S.cu)*rbMult();
+const bEach=i=>B[i][2]*Math.pow(3,S.gu)*rbMult();
+const cps=()=>B.reduce((a,x,i)=>a+x[2]*S.b[i],0)*Math.pow(3,S.gu)*rbMult();
+const fmt=n=>Math.floor(n).toLocaleString("en-US");
+const rbGain=()=>Math.floor(Math.sqrt(S.run/RB_AT));
+function add(n){S.c+=n;S.run+=n;S.all+=n}
+
+function render(){
+ $("#cnt").textContent=fmt(S.c);$("#cps").textContent=fmt(cps());$("#cpc").textContent=fmt(clickPow());
+ $("#rbn").textContent=S.rebirths;$("#rbm").textContent="+"+(S.rp*100)+"%";
+ const g=rbGain();const r=$("#rebirth");r.disabled=S.run<RB_AT;
+ r.textContent=g>=1&&rbArm>Date.now()?`Sure? Click again: restart for +${g} points (+${g*100}%)`:g>=1?`✨ Rebirth: +${g} points (+${g*100}% clicks & production forever)`:`✨ Rebirth at ${fmt(RB_AT)} crumbs (${fmt(S.run)})`;
+ $("#bld").innerHTML=B.map((x,i)=>`<button class="it" data-b="${i}" ${S.c<cost(i)?"disabled":""}><span>${x[3]} ${x[0]} (${S.b[i]})<small>${fmt(bEach(i))}/s each · ${fmt(bEach(i)*S.b[i])}/s total</small></span><b>${fmt(cost(i))}</b></button>`).join("");
+ const up=(a,n,k)=>S[n]>=a.length?"<p class='sub'>All bought 🎉</p>":`<button class="it" data-${k}="1" ${S.c<a[S[n]][1]?"disabled":""}><span>${a[S[n]][0]}<small>${k==="u"?`Click power x3: ${fmt(clickPow())} → ${fmt(clickPow()*3)} per click`:`All buildings x3: ${fmt(cps())}/s → ${fmt(cps()*3)}/s`}</small></span><b>${fmt(a[S[n]][1])}</b></button>`;
+ $("#clk").innerHTML=up(CU,"cu","u");$("#glb").innerHTML=up(GU,"gu","g");
+}
+function fx(x,y,t){const st=$("#stage"),r=st.getBoundingClientRect();
+ const f=document.createElement("span");f.className="fl";f.textContent=t;f.style.left=(x-r.left-15)+"px";f.style.top=(y-r.top-20)+"px";st.appendChild(f);setTimeout(()=>f.remove(),900);
+ for(let i=0;i<5;i++){const b=document.createElement("i");b.className="bit";b.style.left=(x-r.left)+"px";b.style.top=(y-r.top)+"px";b.style.setProperty("--x",(Math.random()*90-45)+"px");b.style.setProperty("--y",(Math.random()*-70-10)+"px");st.appendChild(b);setTimeout(()=>b.remove(),600)}}
+$("#crumb").onclick=e=>{const p=clickPow();add(p);const c=$("#crumb");c.classList.remove("pop");void c.offsetWidth;c.classList.add("pop");
+ const r=c.getBoundingClientRect();fx(e.clientX||r.left+r.width/2,e.clientY||r.top+r.height/2,"+"+fmt(p));render()};
+$("#bld").onclick=e=>{const b=e.target.closest("[data-b]");if(!b)return;const i=+b.dataset.b;if(S.c>=cost(i)){S.c-=cost(i);S.b[i]++;render()}};
+$("#clk").onclick=e=>{if(e.target.closest("[data-u]")&&S.cu<CU.length&&S.c>=CU[S.cu][1]){S.c-=CU[S.cu][1];S.cu++;render()}};
+$("#glb").onclick=e=>{if(e.target.closest("[data-g]")&&S.gu<GU.length&&S.c>=GU[S.gu][1]){S.c-=GU[S.gu][1];S.gu++;render()}};
+let rbArm=0,rsArm=0;
+$("#rebirth").onclick=()=>{const g=rbGain();if(g<1)return;
+ if(Date.now()>rbArm){rbArm=Date.now()+4000;render();return}
+ rbArm=0;S.rp+=g;S.rebirths++;S.c=0;S.run=0;S.b=B.map(()=>0);S.cu=0;S.gu=0;save(1);render()};
+$("#reset").onclick=()=>{
+ if(Date.now()>rsArm){rsArm=Date.now()+4000;$("#reset").textContent="Click again to delete";setTimeout(()=>$("#reset").textContent="Delete save",4000);return}
+ rsArm=0;S={c:0,run:0,all:0,b:B.map(()=>0),cu:0,gu:0,rp:0,rebirths:0};$("#reset").textContent="Delete save";save(1);render()};
+function save(f){store.set("cc",JSON.stringify(S));pushCloud(f)}
+let last=Date.now();
+setInterval(()=>{const n=Date.now(),d=(n-last)/1000;last=n;add(cps()*d);render()},250);
+setInterval(save,5000);
+// Golden star
+function golden(){
+ const st=$("#stage"),g=document.createElement("button");g.id="gold";g.textContent="🌟";g.setAttribute("aria-label","Golden star");
+ g.style.left=(10+Math.random()*75)+"%";g.style.top=(15+Math.random()*65)+"%";
+ g.onclick=e=>{const bonus=Math.max(cps()*60,clickPow()*100);add(bonus);fx(e.clientX,e.clientY,"+"+fmt(bonus));g.remove()};
+ st.appendChild(g);setTimeout(()=>g.remove(),10000);
+}
+(function loop(){setTimeout(()=>{golden();loop()},45000+Math.random()*45000)})();
+render();
+
+// ===== Cloud save (Firebase: Google sign-in) =====
+const FIREBASE_CONFIG={apiKey:"AIzaSyCO3qEVyIRyxTQAb7I8ytiAvI6vRxSqO00",authDomain:"crumbclicker.firebaseapp.com",projectId:"crumbclicker",storageBucket:"crumbclicker.firebasestorage.app",messagingSenderId:"566011859684",appId:"1:566011859684:web:b5afa738bd26a8662a92f1"};
+const noCfg=()=>FIREBASE_CONFIG.apiKey.startsWith("YOUR");
+let cloud=null,cloudP=null,lastPush=0,delArm=0;
+const DEF=()=>({c:0,run:0,all:0,b:B.map(()=>0),cu:0,gu:0,rp:0,rebirths:0});
+function status(t){const e=$("#cst");if(e)e.textContent=t}
+function loadSDK(){return cloudP||(cloudP=new Promise((res,rej)=>{
+ const u="https://www.gstatic.com/firebasejs/10.12.2/firebase-";
+ const ld=n=>new Promise((a,b)=>{const x=document.createElement("script");x.src=u+n+"-compat.js";x.onload=a;x.onerror=b;document.head.appendChild(x)});
+ ld("app").then(()=>Promise.all([ld("auth"),ld("firestore")])).then(()=>{firebase.initializeApp(FIREBASE_CONFIG);firebase.auth().onAuthStateChanged(onUser);res()}).catch(e=>{cloudP=null;rej(e)})}))}
+function acct(){const a=$("#acct");
+ if(cloud){a.innerHTML='<span>☁️ <b id="who"></b> · <span id="cst">Cloud save on</span></span><span><button class="btn" id="so">Sign out</button> <button class="btn" id="del">Delete cloud data</button></span>';
+  $("#who").textContent=cloud.user.displayName||cloud.user.email||"Player";
+  $("#so").onclick=()=>firebase.auth().signOut();$("#del").onclick=delCloud}
+ else{a.innerHTML='<span>☁️ Sign in to save your progress in the cloud and play on any device.</span><span><button class="btn" id="gg">Sign in with Google</button></span><span class="sub" id="cst"></span>';
+  $("#gg").onclick=()=>signIn("google")}}
+async function signIn(){
+ if(noCfg()){status("Cloud save is not set up yet (Firebase config missing).");return}
+ status("Connecting …");
+ try{await loadSDK();const p=new firebase.auth.GoogleAuthProvider();
+  try{await firebase.auth().signInWithPopup(p)}catch(e){if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment")await firebase.auth().signInWithRedirect(p);else throw e}
+ }catch(e){status("Sign-in failed: "+(e.code||e.message))}}
+async function onUser(u){
+ if(!u){cloud=null;store.set("cloudOn","0");acct();return}
+ store.set("cloudOn","1");cloud={user:u,db:firebase.firestore()};acct();
+ try{const d=await cloud.db.doc("users/"+u.uid).get();
+  if(d.exists){const c=JSON.parse(d.data().save);
+   if((c.rebirths||0)>S.rebirths||((c.rebirths||0)===S.rebirths&&(c.all||0)>S.all)){S=Object.assign(DEF(),c);store.set("cc",JSON.stringify(S));render();status("Cloud save loaded ✓");return}}
+  pushCloud(1)}catch(e){status("Could not reach the cloud")}}
+function pushCloud(f){
+ if(!cloud||(!f&&Date.now()-lastPush<30000))return;lastPush=Date.now();
+ cloud.db.doc("users/"+cloud.user.uid).set({save:JSON.stringify(S),rebirths:S.rebirths,all:Math.floor(S.all),updated:Date.now()}).then(()=>status("Cloud saved ✓")).catch(()=>status("Cloud save failed"))}
+async function delCloud(){
+ const b=$("#del");if(Date.now()>delArm){delArm=Date.now()+4000;b.textContent="Click again to delete";setTimeout(()=>{if($("#del"))$("#del").textContent="Delete cloud data"},4000);return}
+ delArm=0;try{await cloud.db.doc("users/"+cloud.user.uid).delete();await cloud.user.delete()}catch(e){await firebase.auth().signOut()}}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)save(1)});
+acct();if(store.get("cloudOn")==="1"&&!noCfg())loadSDK().catch(()=>status("Could not reach the cloud"));
+
+// ===== Memory =====
+const EM=["🍩","🧁","🍰","🥐","🍪","🍫","🍓","🥨"];let first=null,lock=false,mv=0,found=0;
+function newMem(){const g=$("#mg");mv=0;found=0;first=null;$("#mv").textContent=0;
+ const d=[...EM,...EM].sort(()=>Math.random()-.5);
+ g.innerHTML=d.map(e=>`<button class="mc" data-e="${e}" aria-label="Card">${e}</button>`).join("")}
+$("#mg").onclick=e=>{const c=e.target.closest(".mc");if(!c||lock||c===first||c.classList.contains("m"))return;
+ c.classList.add("f");if(!first){first=c;return}
+ mv++;$("#mv").textContent=mv;
+ if(first.dataset.e===c.dataset.e){first.classList.add("m");c.classList.add("m");first=null;if(++found===EM.length)$("#mv").textContent=mv+" – done! 🎉"}
+ else{lock=true;const a=first;first=null;setTimeout(()=>{a.classList.remove("f");c.classList.remove("f");lock=false},700)}};
+$("#mn").onclick=newMem;newMem();
+
+// ===== Reaktionstest =====
+const rb=$("#rxb");let st="idle",t0=0,to;
+let best=+store.get("best")||0;if(best)$("#best").textContent=best+" ms";
+function idle(t){rb.textContent=t;rb.style.background="#ff5a4d";st="idle"}
+idle("Click to start");
+rb.onclick=()=>{
+ if(st==="idle"){st="wait";rb.textContent="Wait for it …";rb.style.background="#f0a020";to=setTimeout(()=>{st="go";t0=performance.now();rb.textContent="NOW!";rb.style.background="#3fc060"},1500+Math.random()*3000)}
+ else if(st==="wait"){clearTimeout(to);idle("Too early! Click to try again.")}
+ else{const ms=Math.round(performance.now()-t0);idle(`${ms} ms – again?`);if(!best||ms<best){best=ms;store.set("best",ms);$("#best").textContent=ms+" ms"}}
+};
+</script>
+</body>
+</html>
