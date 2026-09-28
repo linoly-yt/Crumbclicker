@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Crumbly Games – Free Browser Games: Crumb Clicker, Memory &amp; more</title>
+<title>Crumbly Games – Free Browser Games: Crumb Clicker, Platformer, Snake &amp; more</title>
 <meta name="description" content="Free browser games, no download needed: Crumb Clicker with upgrades and rebirths, Memory and a Reaction Test.">
 <style>
 :root{--ink:#2b1b12;--sky:#8fd6f5;--paper:#fff6dc;--sun:#ffd23f;--red:#ff5a4d;--grn:#5fd068;--brn:#6b4a33;--f:"Chalkboard SE","Marker Felt","Comic Neue","Comic Sans MS","Trebuchet MS",sans-serif}
@@ -43,6 +43,7 @@ section{display:none}section.on{display:block}
 @keyframes bit{to{transform:translate(var(--x),var(--y)) rotate(200deg);opacity:0}}
 #gold{position:absolute;font-size:46px;background:none;border:0;cursor:pointer;animation:gl 1s ease-in-out infinite alternate;z-index:2}
 @keyframes gl{to{transform:scale(1.25) rotate(12deg)}}
+.shop{max-height:430px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-right:12px}
 .shop h3{margin:14px 0 6px;color:#d1481f}
 .it{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;margin:7px 0;padding:8px 12px;border:3px solid var(--ink);border-radius:12px 16px 12px 14px;background:#fff;color:var(--ink);font:inherit;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .1s,box-shadow .1s}
 .it:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;background:#efe3c4}
@@ -52,10 +53,23 @@ section{display:none}section.on{display:block}
 .it b{color:#c2410c;white-space:nowrap}
 .rb{background:var(--red);color:#fff;font-weight:800;justify-content:center;text-align:center;-webkit-text-stroke:0}
 .rb:disabled{background:#efe3c4;color:var(--brn)}
+.gc{width:100%;height:auto;display:block;border:4px solid var(--ink);border-radius:14px;background:#fff;touch-action:none;max-width:640px;margin:8px auto}
+.pfp{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin:12px auto;max-width:640px;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.dir{display:flex;gap:12px}
+.pb{width:96px;height:92px;font:800 2rem var(--f);border:4px solid var(--ink);border-radius:22px;background:#fff;color:var(--ink);box-shadow:4px 5px 0 var(--ink);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;cursor:pointer}
+.pb.jump{width:180px;background:var(--sun);font-size:1.5rem}
+.pb.on{transform:translate(3px,4px);box-shadow:0 0 0;background:#ffe08a}
+.dpad{display:grid;grid-template-columns:repeat(3,92px);gap:10px;justify-content:center;margin:12px 0}
+.dpad .pb{width:92px;height:80px}
+@media(max-width:420px){.pb{width:78px;height:84px}.pb.jump{width:140px}.dpad{grid-template-columns:repeat(3,78px)}.dpad .pb{width:78px}}
 .mem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:420px;margin:12px auto}
-.mc{aspect-ratio:1;border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:3px 3px 0 var(--ink);font-size:2.2rem;cursor:pointer;transition:transform .3s;color:transparent}
-.mc.f{background:var(--sun);color:#000;transform:rotate(-4deg)}
-.mc.m{background:var(--grn);color:#000;cursor:default;box-shadow:none}
+.mc{aspect-ratio:1;border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:3px 3px 0 var(--ink);font-size:2.2rem;line-height:1;padding:0;cursor:pointer;transition:transform .3s;color:var(--ink);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",var(--f);display:grid;place-items:center}
+.mc::before{content:"?";font-weight:800;color:var(--brn)}
+.mc span{display:none}
+.mc.f::before,.mc.m::before{content:none}
+.mc.f span,.mc.m span{display:block}
+.mc.f{background:var(--sun);transform:rotate(-4deg)}
+.mc.m{background:var(--grn);cursor:default;box-shadow:none}
 footer{text-align:center;padding:24px 14px;font-weight:700}
 #cb{position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:4px solid var(--ink);padding:14px;z-index:9;display:none}
 #cb p{margin:0 auto 10px;max-width:800px;font-size:.9rem}
@@ -66,10 +80,12 @@ footer{text-align:center;padding:24px 14px;font-weight:700}
 <body>
 <header>
 <h1>Crumbly Games</h1>
-<p>Free browser games. No download, your progress will save on your google-account. (need to sign in)</p>
+<p>Free browser games. No download, no sign-up. Your progress is saved on your device.</p>
 </header>
 <nav role="tablist" aria-label="Games">
 <button role="tab" aria-selected="true" data-t="cc">🍪 Crumb Clicker</button>
+<button role="tab" aria-selected="false" data-t="plat">🏃 Platformer</button>
+<button role="tab" aria-selected="false" data-t="snk">🐍 Snake</button>
 <button role="tab" aria-selected="false" data-t="mem">🧠 Memory</button>
 <button role="tab" aria-selected="false" data-t="rx">⚡ Reaction Test</button>
 </nav>
@@ -93,7 +109,23 @@ footer{text-align:center;padding:24px 14px;font-weight:700}
 <p class="sub"><button class="btn" id="reset">Delete save</button></p>
 </div>
 </div>
-<p class="sub">How to play: Click the cookie, buy buildings to bake automatically and catch golden stars for bonuses. Once you have baked 1 million crumbs in one run, you can rebirth: you start over but keep a permanent bonus.</p>
+<p class="sub">How to play: Click the cookie, buy buildings to bake automatically and catch golden stars for bonuses. Once you have baked enough crumbs in one run (1 million at first, 3 times more after every rebirth), you can rebirth: you start over but keep a permanent bonus.</p>
+</section>
+
+<section id="plat" class="card">
+<h2>Cookie Run</h2>
+<p class="sub">3 levels: collect coins, stomp the grumpy blobs by landing on them, avoid spikes and reach the flag. Springs launch you high. <b>Keyboard:</b> arrows or A/D to move, Space, W or ↑ to jump, R restarts the level.</p>
+<canvas id="pf" class="gc" width="640" height="360" tabindex="0" aria-label="Cookie Run game"></canvas>
+<div class="pfp" id="pfpad"><div class="dir"><button class="pb" data-k="l" aria-label="Left">◀</button><button class="pb" data-k="r" aria-label="Right">▶</button></div><button class="pb jump" data-k="j">JUMP</button></div>
+<p style="text-align:center"><button class="btn" id="pfr">Restart level</button></p>
+</section>
+
+<section id="snk" class="card">
+<h2>Snake</h2>
+<p class="sub">Eat cookies and grow. Don't hit the walls or yourself. Score: <b id="ssc">0</b> · Best: <b id="sbe">0</b><br>Keyboard: arrows or WASD, Space or Enter to restart.</p>
+<canvas id="sn" class="gc" width="320" height="320" style="max-width:340px" tabindex="0" aria-label="Snake game"></canvas>
+<div class="dpad"><button class="pb" style="grid-column:2" data-d="0,-1" aria-label="Up">▲</button><button class="pb" style="grid-column:1;grid-row:2" data-d="-1,0" aria-label="Left">◀</button><button class="pb" style="grid-column:2;grid-row:2" data-d="0,1" aria-label="Down">▼</button><button class="pb" style="grid-column:3;grid-row:2" data-d="1,0" aria-label="Right">▶</button></div>
+<p class="sub" style="text-align:center">You can also swipe on the game. Tap the game to restart.</p>
 </section>
 
 <section id="mem" class="card">
@@ -150,7 +182,7 @@ consent();
 const B=[["Crumb Spoon",15,1,"🥄"],["Oven",100,6,"🔥"],["Bakery",1100,40,"🥖"],["Factory",12000,220,"🏭"],["Flour Mill",130000,1200,"🌾"],["Space Bakery",1.4e6,7000,"🚀"],["Time Machine",20e6,40000,"⏳"],["Crumb Portal",330e6,250000,"🌀"]];
 const CU=[["Strong Fingers",50],["Butter Hands",500],["Sugar Fist",5000],["Choco Click",50000],["Diamond Fingers",500000]];
 const GU=[["Better Recipes",2000],["Spice Blend",100000],["Secret Ingredient",4e6],["Galactic Dough",2e8]];
-const RB_AT=1e6;
+const rbCost=()=>1e6*Math.pow(3,S.rebirths);
 let S={c:0,run:0,all:0,b:B.map(()=>0),cu:0,gu:0,rp:0,rebirths:0};
 try{const l=store.get("cc");if(l)S=Object.assign(S,JSON.parse(l))}catch(e){}
 const rbMult=()=>1+S.rp;
@@ -159,17 +191,18 @@ const clickPow=()=>Math.pow(3,S.cu)*rbMult();
 const bEach=i=>B[i][2]*Math.pow(3,S.gu)*rbMult();
 const cps=()=>B.reduce((a,x,i)=>a+x[2]*S.b[i],0)*Math.pow(3,S.gu)*rbMult();
 const fmt=n=>Math.floor(n).toLocaleString("en-US");
-const rbGain=()=>Math.floor(Math.sqrt(S.run/RB_AT));
+const rbGain=()=>Math.floor(Math.sqrt(S.run/rbCost()));
 function add(n){S.c+=n;S.run+=n;S.all+=n}
 
+function put(id,h){const e=$(id);if(e._h!==h){e._h=h;e.innerHTML=h}}
 function render(){
  $("#cnt").textContent=fmt(S.c);$("#cps").textContent=fmt(cps());$("#cpc").textContent=fmt(clickPow());
  $("#rbn").textContent=S.rebirths;$("#rbm").textContent="+"+(S.rp*100)+"%";
- const g=rbGain();const r=$("#rebirth");r.disabled=S.run<RB_AT;
- r.textContent=g>=1&&rbArm>Date.now()?`Sure? Click again: restart for +${g} points (+${g*100}%)`:g>=1?`✨ Rebirth: +${g} points (+${g*100}% clicks & production forever)`:`✨ Rebirth at ${fmt(RB_AT)} crumbs (${fmt(S.run)})`;
- $("#bld").innerHTML=B.map((x,i)=>`<button class="it" data-b="${i}" ${S.c<cost(i)?"disabled":""}><span>${x[3]} ${x[0]} (${S.b[i]})<small>${fmt(bEach(i))}/s each · ${fmt(bEach(i)*S.b[i])}/s total</small></span><b>${fmt(cost(i))}</b></button>`).join("");
+ const g=rbGain();const r=$("#rebirth");r.disabled=S.run<rbCost();
+ r.textContent=g>=1&&rbArm>Date.now()?`Sure? Click again: restart for +${g} points (+${g*100}%)`:g>=1?`✨ Rebirth: +${g} points (+${g*100}% clicks & production forever)`:`✨ Rebirth at ${fmt(rbCost())} crumbs (${fmt(S.run)})`;
+ put("#bld",B.map((x,i)=>`<button class="it" data-b="${i}" ${S.c<cost(i)?"disabled":""}><span>${x[3]} ${x[0]} (${S.b[i]})<small>${fmt(bEach(i))}/s each · ${fmt(bEach(i)*S.b[i])}/s total</small></span><b>${fmt(cost(i))}</b></button>`).join(""));
  const up=(a,n,k)=>S[n]>=a.length?"<p class='sub'>All bought 🎉</p>":`<button class="it" data-${k}="1" ${S.c<a[S[n]][1]?"disabled":""}><span>${a[S[n]][0]}<small>${k==="u"?`Click power x3: ${fmt(clickPow())} → ${fmt(clickPow()*3)} per click`:`All buildings x3: ${fmt(cps())}/s → ${fmt(cps()*3)}/s`}</small></span><b>${fmt(a[S[n]][1])}</b></button>`;
- $("#clk").innerHTML=up(CU,"cu","u");$("#glb").innerHTML=up(GU,"gu","g");
+ put("#clk",up(CU,"cu","u"));put("#glb",up(GU,"gu","g"));
 }
 function fx(x,y,t){const st=$("#stage"),r=st.getBoundingClientRect();
  const f=document.createElement("span");f.className="fl";f.textContent=t;f.style.left=(x-r.left-15)+"px";f.style.top=(y-r.top-20)+"px";st.appendChild(f);setTimeout(()=>f.remove(),900);
@@ -242,7 +275,7 @@ acct();if(store.get("cloudOn")==="1"&&!noCfg())loadSDK().catch(()=>status("Could
 const EM=["🍩","🧁","🍰","🥐","🍪","🍫","🍓","🥨"];let first=null,lock=false,mv=0,found=0;
 function newMem(){const g=$("#mg");mv=0;found=0;first=null;$("#mv").textContent=0;
  const d=[...EM,...EM].sort(()=>Math.random()-.5);
- g.innerHTML=d.map(e=>`<button class="mc" data-e="${e}" aria-label="Card">${e}</button>`).join("")}
+ g.innerHTML=d.map(e=>`<button class="mc" data-e="${e}" aria-label="Card"><span>${e}</span></button>`).join("")}
 $("#mg").onclick=e=>{const c=e.target.closest(".mc");if(!c||lock||c===first||c.classList.contains("m"))return;
  c.classList.add("f");if(!first){first=c;return}
  mv++;$("#mv").textContent=mv;
@@ -260,6 +293,151 @@ rb.onclick=()=>{
  else if(st==="wait"){clearTimeout(to);idle("Too early! Click to try again.")}
  else{const ms=Math.round(performance.now()-t0);idle(`${ms} ms – again?`);if(!best||ms<best){best=ms;store.set("best",ms);$("#best").textContent=ms+" ms"}}
 };
+
+// ===== Platformer (Cookie Run) =====
+(function(){
+const cv=$("#pf"),g=cv.getContext("2d"),W=640,H=360,T=40,PW=26,PH=34,INK="#2b1b12";
+const LV=[
+{w:60,gaps:[[14,3],[28,3],[42,3]],blocks:[[10,5,3],[18,5,3],[32,5,3],[36,4,3],[46,5,4]],spikes:[22],enemies:[[38,6],[52,6]],springs:[],coins:[[24,6],[52,5]]},
+{w:75,gaps:[[12,3],[24,3],[38,3],[52,3],[64,3]],blocks:[[8,5,2],[15,5,3],[20,4,2],[28,5,3],[33,5,2],[41,5,3],[46,4,3],[56,5,3],[60,4,2],[68,5,4]],spikes:[18,31,44,59],enemies:[[21,6],[35,6],[48,6],[55,6]],springs:[],coins:[]},
+{w:90,gaps:[[10,3],[22,3],[34,3],[46,3],[58,3],[70,3],[80,3]],blocks:[[6,5,2],[14,5,3],[18,4,2],[26,5,3],[30,4,3],[38,5,2],[42,5,2],[50,5,3],[54,4,3],[62,5,3],[66,5,2],[74,5,3],[84,5,3]],spikes:[13,25,37,49,65,73],enemies:[[17,6],[29,6],[40,6],[53,6],[68,6],[77,6]],springs:[[20,6],[60,6]],coins:[[20,2],[21,1],[60,2],[61,1]]}];
+let G,coins,en,parts=[],p,li=0,base=0,lc=0,deaths=0,st="play",cam=0,jb=0,coy=0,msgT=0,fl=0;
+const k={l:0,r:0,j:0},kd={},held={};
+const sol=(c,r)=>r<0?false:c<0||c>=G[0].length?true:r>=9?false:G[r][c]===1;
+const col=o=>{for(let r=Math.floor(o.y/T);r<=Math.floor((o.y+PH-.01)/T);r++)for(let c=Math.floor(o.x/T);c<=Math.floor((o.x+PW-.01)/T);c++)if(sol(c,r))return true;return false};
+const rr=(x,y,w,h,r)=>{g.beginPath();g.roundRect?g.roundRect(x,y,w,h,r):g.rect(x,y,w,h)};
+function burst(x,y,n,c){for(let i=0;i<n;i++)parts.push({x,y,vx:(Math.random()-.5)*6,vy:-Math.random()*5,l:30,c})}
+function spawn(){p={x:2*T,y:6*T+6,vx:0,vy:0,g:0,f:1};coy=0;jb=0}
+function load(n){const L=LV[n];G=[];for(let r=0;r<9;r++)G[r]=Array(L.w).fill(0);
+ for(let c=0;c<L.w;c++)G[7][c]=G[8][c]=1;
+ L.gaps.forEach(([c,n])=>{for(let i=0;i<n;i++)G[7][c+i]=G[8][c+i]=0});
+ L.blocks.forEach(([c,r,n])=>{for(let i=0;i<n;i++)G[r][c+i]=1});
+ L.spikes.forEach(c=>G[6][c]=2);L.springs.forEach(([c,r])=>G[r][c]=3);
+ coins=[];L.blocks.forEach(([c,r,n])=>{for(let i=0;i<n;i++)coins.push({x:c+i,y:r-1})});
+ L.gaps.forEach(([c])=>coins.push({x:c+1,y:5}));L.coins.forEach(([x,y])=>coins.push({x,y}));
+ en=L.enemies.map(([c,r])=>({x:c*T+5,y:(r+1)*T-30,vx:1.2,dead:0}));
+ lc=0;parts=[];cam=0;spawn()}
+function die(){deaths++;fl=12;burst(p.x+13,p.y+17,16,"#e0a24f");spawn()}
+function advance(){if(st==="win"){base+=lc;li++;load(li);st="play"}else if(st==="done"){li=0;base=0;deaths=0;load(0);st="play"}}
+function step(){
+ if(st!=="play"){msgT++;if(jb>0&&msgT>40){jb=0;advance()}jb--;return}
+ msgT=0;const ax=k.r-k.l;
+ p.vx+=ax*.9;if(!ax)p.vx*=.78;p.vx=Math.max(-4.4,Math.min(4.4,p.vx));if(Math.abs(p.vx)<.1)p.vx=0;if(ax)p.f=ax;
+ coy=p.g?7:coy-1;jb--;
+ if(jb>0&&coy>0){p.vy=-11.5;coy=0;jb=0;p.g=0;burst(p.x+13,p.y+34,4,"#fff")}
+ if(!k.j&&p.vy<-4)p.vy=-4;
+ p.vy=Math.min(p.vy+.55,14);
+ p.x+=p.vx;if(col(p)){p.x=p.vx>0?Math.floor((p.x+PW)/T)*T-PW:(Math.floor(p.x/T)+1)*T;p.vx=0}
+ p.y+=p.vy;p.g=0;if(col(p)){if(p.vy>0){p.y=Math.floor((p.y+PH)/T)*T-PH;p.g=1}else p.y=(Math.floor(p.y/T)+1)*T;p.vy=0}
+ for(let c=Math.floor((p.x+6)/T);c<=Math.floor((p.x+PW-6)/T);c++){
+  if(G[6][c]===2&&p.y+PH>6*T+16)return die();
+  if(G[6][c]===3&&p.vy>=0&&p.y+PH>6*T+24){p.vy=-16.5;p.g=0;coy=0;burst(p.x+13,p.y+34,8,"#ffd23f")}}
+ if(p.y>H+50)return die();
+ for(const c of coins)if(!c.t&&Math.abs(p.x+13-(c.x*T+20))<24&&Math.abs(p.y+17-(c.y*T+20))<26){c.t=1;lc++;burst(c.x*T+20,c.y*T+20,5,"#ffd23f")}
+ for(const e of en){if(e.dead)continue;
+  const nx=e.x+e.vx,ah=Math.floor((e.vx>0?nx+30:nx)/T),rf=Math.floor((e.y+32)/T),rw=Math.floor((e.y+15)/T);
+  if(sol(ah,rw)||(G[rw]&&G[rw][ah]===2)||!sol(ah,rf))e.vx=-e.vx;else e.x=nx;
+  if(p.x<e.x+30&&p.x+PW>e.x&&p.y<e.y+30&&p.y+PH>e.y){
+   if(p.vy>0&&p.y+PH-p.vy<=e.y+14){e.dead=1;p.vy=k.j?-12:-8;burst(e.x+15,e.y+20,10,"#b05be0")}else return die()}}
+ if(p.x>(G[0].length-3)*T){st=li===LV.length-1?"done":"win";msgT=0}
+ for(const q of parts){q.x+=q.vx;q.y+=q.vy;q.vy+=.3;q.l--}parts=parts.filter(q=>q.l>0);
+}
+function draw(){
+ const LW=G[0].length,sh=fl>0?(Math.random()-.5)*fl:0;fl=Math.max(0,fl-1);
+ cam+=(Math.max(0,Math.min(p.x-260,LW*T-W))-cam)*.15;
+ g.fillStyle="#8fd6f5";g.fillRect(0,0,W,H);
+ g.fillStyle="#fff";for(let i=0;i<8;i++){const x=(((i*330-cam*.4)%1000)+1000)%1000-120,y=40+(i*47)%110;g.beginPath();g.arc(x,y,24,0,7);g.arc(x+26,y+6,20,0,7);g.arc(x-24,y+8,18,0,7);g.fill()}
+ g.save();g.translate(-Math.round(cam)+sh,0);g.lineWidth=3;g.strokeStyle=INK;g.lineCap="round";
+ const c1=Math.floor(cam/T);
+ for(let c=c1;c<=c1+17&&c<LW;c++)for(let r=0;r<9;r++){const v=G[r][c],x=c*T,y=r*T;
+  if(v===1){g.fillStyle="#a5682a";g.fillRect(x,y,T,T);if(!sol(c,r-1)){g.fillStyle="#5fd068";g.fillRect(x,y,T,10)}
+   g.beginPath();if(!sol(c,r-1)){g.moveTo(x,y);g.lineTo(x+T,y)}if(r<8&&!sol(c,r+1)){g.moveTo(x,y+T);g.lineTo(x+T,y+T)}if(!sol(c-1,r)){g.moveTo(x,y);g.lineTo(x,y+T)}if(!sol(c+1,r)){g.moveTo(x+T,y);g.lineTo(x+T,y+T)}g.stroke()}
+  else if(v===2){g.fillStyle="#ff5a4d";g.beginPath();g.moveTo(x+2,y+T);g.lineTo(x+T/2,y+14);g.lineTo(x+T-2,y+T);g.closePath();g.fill();g.stroke()}
+  else if(v===3){g.fillStyle="#ffd23f";g.fillRect(x+6,y+26,T-12,14);g.strokeRect(x+6,y+26,T-12,14);g.fillStyle="#ff5a4d";rr(x+2,y+18,T-4,10,4);g.fill();g.stroke()}}
+ const fx=(LW-3)*T+16;g.fillStyle="#fff";g.fillRect(fx,190,5,90);g.strokeRect(fx,190,5,90);
+ g.fillStyle="#ff5a4d";g.beginPath();g.moveTo(fx+5,192);g.lineTo(fx+45,210);g.lineTo(fx+5,228);g.closePath();g.fill();g.stroke();
+ const t=Date.now()/200;
+ for(const c of coins)if(!c.t){g.fillStyle="#ffd23f";g.beginPath();g.arc(c.x*T+20,c.y*T+20+Math.sin(t+c.x)*3,9,0,7);g.fill();g.stroke()}
+ for(const e of en)if(!e.dead){g.fillStyle="#b05be0";rr(e.x,e.y+4,30,26,10);g.fill();g.stroke();
+  g.fillStyle="#fff";for(const o of[9,21]){g.beginPath();g.arc(e.x+o,e.y+16,4.5,0,7);g.fill();g.stroke()}
+  g.fillStyle=INK;for(const o of[9,21]){g.beginPath();g.arc(e.x+o+(e.vx>0?1.5:-1.5),e.y+17,1.8,0,7);g.fill()}
+  g.beginPath();g.moveTo(e.x+4,e.y+8);g.lineTo(e.x+13,e.y+11);g.moveTo(e.x+26,e.y+8);g.lineTo(e.x+17,e.y+11);g.stroke()}
+ const px=p.x+13,py=p.y+19;
+ g.fillStyle="#5a3218";if(Math.abs(p.vx)>.5&&p.g){const o=Math.sin(Date.now()/60)*5;g.beginPath();g.ellipse(px-6+o,py+15,5,3,0,0,7);g.ellipse(px+6-o,py+15,5,3,0,0,7);g.fill()}
+ g.fillStyle="#e0a24f";g.beginPath();g.arc(px,py,15,0,7);g.fill();g.stroke();
+ g.fillStyle="#5a3218";for(const d of[[-8,-7],[8,5],[-4,9]]){g.beginPath();g.arc(px+d[0],py+d[1],2.5,0,7);g.fill()}
+ g.fillStyle="#fff";for(const e of[-4,5]){g.beginPath();g.arc(px+e+p.f*2,py-2,4,0,7);g.fill();g.stroke()}
+ g.fillStyle=INK;for(const e of[-4,5]){g.beginPath();g.arc(px+e+p.f*3,py-2,1.6,0,7);g.fill()}
+ for(const q of parts){g.globalAlpha=q.l/30;g.fillStyle=q.c;g.fillRect(q.x-3,q.y-3,6,6)}g.globalAlpha=1;
+ g.restore();
+ g.font="bold 18px sans-serif";g.textAlign="left";g.fillStyle=INK;g.fillText("Level "+(li+1)+"/"+LV.length+"   Coins "+(base+lc)+"   Deaths "+deaths,12,26);
+ if(st!=="play"){g.fillStyle="rgba(255,246,220,.9)";g.fillRect(60,110,W-120,130);g.strokeRect(60,110,W-120,130);g.textAlign="center";g.fillStyle=INK;
+  g.font="bold 28px sans-serif";g.fillText(st==="win"?"Level "+(li+1)+" complete! 🎉":"You finished all levels! 🏆",W/2,158);
+  g.font="18px sans-serif";g.fillText(st==="win"?"Coins so far: "+(base+lc):"Coins: "+(base+lc)+" · Deaths: "+deaths,W/2,190);
+  g.fillText("Tap the game, press Enter or Jump to "+(st==="win"?"continue":"play again"),W/2,220)}
+}
+let last=0,acc=0;
+function loop(ts){requestAnimationFrame(loop);
+ if(!$("#plat").classList.contains("on")){last=ts;return}
+ acc+=Math.min(ts-last,100);last=ts;while(acc>=16.67){step();acc-=16.67}draw()}
+const KM={ArrowLeft:"l",KeyA:"l",ArrowRight:"r",KeyD:"r",ArrowUp:"j",KeyW:"j",Space:"j"};
+function calc(){const n={l:0,r:0,j:0};for(const c in kd)if(kd[c])n[KM[c]]=1;for(const id in held)if(held[id])n[held[id]]=1;
+ if(n.j&&!k.j)jb=8;Object.assign(k,n);document.querySelectorAll("#pfpad .pb").forEach(b=>b.classList.toggle("on",!!k[b.dataset.k]))}
+addEventListener("keydown",e=>{if(!$("#plat").classList.contains("on"))return;
+ if(e.code==="KeyR"){load(li);st="play";return}
+ if(e.code==="Enter"&&st!=="play"){advance();return}
+ if(KM[e.code]){e.preventDefault();if(document.activeElement&&document.activeElement.tagName==="BUTTON")document.activeElement.blur();kd[e.code]=1;calc()}});
+addEventListener("keyup",e=>{if(KM[e.code]){if($("#plat").classList.contains("on"))e.preventDefault();kd[e.code]=0;calc()}});
+addEventListener("blur",()=>{for(const c in kd)kd[c]=0;for(const id in held)delete held[id];calc()});
+const pad=$("#pfpad");
+const upd=e=>{const b=document.elementFromPoint(e.clientX,e.clientY),kb=b&&b.closest("#pfpad [data-k]");held[e.pointerId]=kb?kb.dataset.k:0;calc()};
+pad.addEventListener("pointerdown",e=>{e.preventDefault();try{pad.setPointerCapture(e.pointerId)}catch(_){}upd(e)});
+pad.addEventListener("pointermove",e=>{if(e.pointerId in held)upd(e)});
+["pointerup","pointercancel","lostpointercapture"].forEach(t=>pad.addEventListener(t,e=>{delete held[e.pointerId];calc()}));
+pad.addEventListener("contextmenu",e=>e.preventDefault());
+cv.addEventListener("pointerdown",()=>{cv.focus({preventScroll:true});if(st!=="play"&&msgT>40)advance()});
+$("#pfr").onclick=()=>{load(li);st="play"};
+load(0);requestAnimationFrame(loop);
+})();
+
+// ===== Snake =====
+(function(){
+const cv=$("#sn"),g=cv.getContext("2d"),N=16,Z=20;let s,d,nd,f,sc,over,best=+store.get("snb")||0;
+$("#sbe").textContent=best;
+const food=()=>{let a;do{a=[Math.random()*N|0,Math.random()*N|0]}while(s.some(c=>c[0]===a[0]&&c[1]===a[1]));return a};
+function init(){s=[[8,8],[7,8],[6,8]];d=[1,0];nd=d;f=food();sc=0;over=0;$("#ssc").textContent=0;draw()}
+function dir(a,b){if(a+d[0]||b+d[1])nd=[a,b]}
+function tick(){
+ if(over||!$("#snk").classList.contains("on"))return;
+ d=nd;const h=[s[0][0]+d[0],s[0][1]+d[1]];
+ if(h[0]<0||h[1]<0||h[0]>=N||h[1]>=N||s.some(c=>c[0]===h[0]&&c[1]===h[1])){over=1;draw();return}
+ s.unshift(h);
+ if(h[0]===f[0]&&h[1]===f[1]){sc++;$("#ssc").textContent=sc;if(sc>best){best=sc;store.set("snb",best);$("#sbe").textContent=best}f=food()}else s.pop();
+ draw()}
+function draw(){
+ g.fillStyle="#fff6dc";g.fillRect(0,0,320,320);g.fillStyle="#f3e6bd";
+ for(let i=0;i<N;i++)for(let j=0;j<N;j++)if((i+j)%2)g.fillRect(i*Z,j*Z,Z,Z);
+ g.font="18px sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillStyle="#000";g.fillText("🍪",f[0]*Z+10,f[1]*Z+11);
+ g.lineWidth=2;g.strokeStyle="#2b1b12";
+ s.forEach((c,i)=>{g.fillStyle=i?"#5fd068":"#3fc060";g.beginPath();g.roundRect?g.roundRect(c[0]*Z+1,c[1]*Z+1,Z-2,Z-2,6):g.rect(c[0]*Z+1,c[1]*Z+1,Z-2,Z-2);g.fill();g.stroke()});
+ g.fillStyle="#fff";for(const o of[-4,4]){g.beginPath();g.arc(s[0][0]*Z+10+d[0]*3+(d[0]?0:o),s[0][1]*Z+10+d[1]*3+(d[1]?0:o),3,0,7);g.fill()}
+ if(over){g.fillStyle="rgba(255,246,220,.9)";g.fillRect(0,110,320,100);g.fillStyle="#2b1b12";g.font="bold 24px sans-serif";g.fillText("Game over – tap to retry",160,160)}
+}
+const km={ArrowLeft:[-1,0],KeyA:[-1,0],ArrowRight:[1,0],KeyD:[1,0],ArrowUp:[0,-1],KeyW:[0,-1],ArrowDown:[0,1],KeyS:[0,1]};
+const on=()=>$("#snk").classList.contains("on");
+addEventListener("keydown",e=>{if(!on())return;
+ if((e.code==="Space"||e.code==="Enter")&&over){e.preventDefault();init();return}
+ if(km[e.code]){e.preventDefault();if(document.activeElement&&document.activeElement.tagName==="BUTTON")document.activeElement.blur();dir(...km[e.code])}});
+addEventListener("keyup",e=>{if(on()&&(km[e.code]||e.code==="Space"||e.code==="Enter"))e.preventDefault()});
+document.querySelectorAll("#snk [data-d]").forEach(b=>b.addEventListener("pointerdown",e=>{e.preventDefault();dir(...b.dataset.d.split(",").map(Number))}));
+let sx,sy;
+cv.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+cv.addEventListener("touchend",e=>{const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+ if(Math.abs(dx)<12&&Math.abs(dy)<12){if(over)init();return}
+ Math.abs(dx)>Math.abs(dy)?dir(dx>0?1:-1,0):dir(0,dy>0?1:-1)});
+cv.addEventListener("click",()=>{cv.focus({preventScroll:true});if(over)init()});
+setInterval(tick,190);init();
+})();
 </script>
 </body>
 </html>
