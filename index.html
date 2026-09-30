@@ -340,18 +340,18 @@ async function delCloud(){
  const b=$("#del");if(Date.now()>delArm){delArm=Date.now()+4000;b.textContent="Click again to delete";setTimeout(()=>{if($("#del"))$("#del").textContent="Delete cloud data"},4000);return}
  delArm=0;try{try{await cloud.db.doc("leaderboard/"+cloud.user.uid).delete()}catch(e){}await cloud.db.doc("users/"+cloud.user.uid).delete();await cloud.user.delete()}catch(e){await firebase.auth().signOut()}}
 // ===== Leaderboard (public entries: Google display name only, never the e-mail) =====
-const LBC=[["rebirths","Rebirths"],["all","Total crumbs"],["cps","Per second"],["cpc","Per click"]];
-let lbOn=false,lbCat="rebirths",lbBusy=0;
+const LBC=[["rebirths","Rebirths"],["all","Total crumbs"],["cur","Current crumbs"],["cps","Per second"],["cpc","Per click"]];
+let lbOn=false,lbCat="rebirths",lbBusy=0,lbErr="";
 const lbName=()=>String((cloud&&cloud.user.displayName)||"Player").slice(0,30);
 function pushLB(){if(!cloud||!lbOn)return Promise.resolve();
- return cloud.db.doc("leaderboard/"+cloud.user.uid).set({name:lbName(),rebirths:S.rebirths,all:Math.floor(S.all),cps:Math.floor(S.mc||0),cpc:Math.floor(S.mk||0),updated:Date.now()}).catch(()=>{})}
+ return cloud.db.doc("leaderboard/"+cloud.user.uid).set({name:lbName(),rebirths:S.rebirths,all:Math.floor(S.all),cur:Math.floor(S.c),cps:Math.floor(S.mc||0),cpc:Math.floor(S.mk||0),updated:Date.now()}).then(()=>{lbErr=""},e=>{lbErr=e.code||String(e.message);if(e.code==="permission-denied")lbOn=false;lbState()})}
 function lbSync(){lbState();if($("#lb").classList.contains("open"))loadLB()}
 function lbState(){const e=$("#lbst");if(!e)return;e.innerHTML="";$("#lbcat").style.display=cloud?"":"none";$("#lbl").style.display=cloud?"":"none";
  const t=document.createElement("p");t.className="sub";const b=document.createElement("button");b.className="btn";
  if(!cloud){t.textContent="Sign in with Google to see the leaderboard and compete with other players.";b.textContent="Sign in with Google";b.onclick=()=>signIn("google")}
  else if(!lbOn){t.textContent="Join to appear with your Google name: "+lbName()+". Your e-mail address is never published.";b.textContent="Join leaderboard";b.onclick=()=>{lbOn=true;lbState();pushLB().then(loadLB)}}
  else{t.textContent="You appear as "+lbName()+".";b.textContent="Leave leaderboard";b.onclick=()=>{cloud.db.doc("leaderboard/"+cloud.user.uid).delete().catch(()=>{}).then(()=>{lbOn=false;lbState();loadLB()})}}
- e.append(t,b)}
+ e.append(t,b);if(lbErr){const er=document.createElement("p");er.className="sub";er.textContent="Could not save your entry: "+lbErr;e.append(er)}}
 async function loadLB(){const ul=$("#lbl"),id=++lbBusy;ul.innerHTML="";if(!cloud)return;
  const msg=t=>{ul.innerHTML="";const m=document.createElement("li");m.className="sub";m.textContent=t;ul.appendChild(m)};
  msg("Loading …");
@@ -364,7 +364,7 @@ async function loadLB(){const ul=$("#lbl"),id=++lbBusy;ul.innerHTML="";if(!cloud
    const nm=document.createElement("span");nm.className="nm";nm.textContent=String(x.name||"Player").slice(0,30);
    const v=document.createElement("b");v.textContent=fmt(Number(x[lbCat])||0);
    row.append(rk,nm,v);ul.appendChild(row)})
- }catch(e){if(id===lbBusy)msg("Could not load the leaderboard.")}}
+ }catch(e){if(id===lbBusy)msg("Could not load the leaderboard ("+(e.code||e.message)+").")}}
 LBC.forEach(([k,n])=>{const b=document.createElement("button");b.className="btn lbc";b.textContent=n;b.setAttribute("aria-pressed",k===lbCat);
  b.onclick=()=>{lbCat=k;document.querySelectorAll(".lbc").forEach(x=>x.setAttribute("aria-pressed",x===b));loadLB()};$("#lbcat").appendChild(b)});
 function lbOpen(o){$("#lb").classList.toggle("open",o);$("#lbtab").lastElementChild.textContent=o?"Close":"Top";$("#lbtab").setAttribute("aria-label",o?"Close leaderboard":"Open leaderboard");document.querySelector(".lbin").setAttribute("aria-hidden",!o);
