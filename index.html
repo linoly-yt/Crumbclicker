@@ -82,6 +82,27 @@ nav .ic{width:1.5em;height:1.5em;vertical-align:-.4em}
 .mc.f>span,.mc.m>span{display:block}
 .mc.f{background:var(--sun);transform:rotate(-4deg)}
 .mc.m{background:var(--grn);cursor:default;box-shadow:none}
+.lbc{padding:5px 10px;font-size:.85rem}
+.lbc[aria-pressed=true]{background:var(--sun)}
+#lbtab{position:absolute;left:calc(100% + 4px);top:45%;visibility:visible;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 8px;border-radius:0 16px 16px 0;border-left:0;background:#fff;box-shadow:3px 3px 0 var(--ink)}
+#lbtab:hover{transform:translateY(-2px);box-shadow:3px 5px 0 var(--ink)}
+#lbtab:active{transform:translateY(3px);box-shadow:0 0 0 var(--ink)}
+#lbtab .ic{width:1.7em;height:1.7em}
+.lbin{height:100%;overflow-y:auto;padding:16px}
+#lb{position:fixed;left:0;top:0;bottom:0;width:min(370px,92vw);z-index:30;background:var(--paper);border-right:4px solid var(--ink);transform:translateX(-100%);visibility:hidden;transition:transform .4s cubic-bezier(.2,.9,.3,1.05),visibility 0s .4s,box-shadow .4s}
+#lb.open{transform:none;visibility:visible;box-shadow:6px 0 0 var(--ink);transition:transform .4s cubic-bezier(.2,.9,.3,1.05),visibility 0s,box-shadow .4s}
+.lbh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lbh h2{margin:0;font-size:1.3rem}
+.lbh .ic{width:1.5em;height:1.5em;vertical-align:-.4em}
+#lbcat{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+#lbl{list-style:none;margin:0 0 12px;padding:0}
+#lbl li{display:flex;align-items:center;gap:8px;padding:6px 8px;border:3px solid var(--ink);border-radius:10px 14px 10px 12px;background:#fff;margin:6px 0}
+#lbl li.me{background:#fff3b8}
+#lbl li.sub{border:0;background:none}
+#lbl .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+#lbl b{color:#c2410c;white-space:nowrap}
+.rk{width:26px;height:26px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-size:.8rem;font-weight:800;flex:none}
+.r1{background:#ffd23f}.r2{background:#dfe6ee}.r3{background:#e0a24f}.rn{background:#fff}
 footer{text-align:center;padding:24px 14px;font-weight:700}
 #cb{position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:4px solid var(--ink);padding:14px;z-index:9;display:none}
 #cb p{margin:0 auto 10px;max-width:800px;font-size:.9rem}
@@ -105,6 +126,8 @@ footer{text-align:center;padding:24px 14px;font-weight:700}
 <div class="ad" id="ad1"></div>
 
 <section id="cc" class="on">
+<div id="lb"><button id="lbtab" class="btn" aria-label="Open leaderboard"><span class="ic" data-i="trophy"></span><span>Top</span></button>
+<aside class="lbin" aria-hidden="true" aria-label="Leaderboard"><div class="lbh"><h2><span class="ic" data-i="trophy"></span> Leaderboard</h2></div><div id="lbcat"></div><ol id="lbl"></ol><div id="lbst"></div><p class="sub">Only your Google display name is shown – never your e-mail address.</p></aside></div>
 <div class="card" id="acct"></div>
 <div class="cc">
 <div class="card stage" id="stage">
@@ -188,6 +211,7 @@ hourglass:'<path d="M10 3C10 12 16 14 16 16C16 18 10 20 10 29H22C22 20 16 18 16 
 portal:'<circle cx="16" cy="16" r="13" fill="#7b5cf0"/><circle cx="16" cy="16" r="9" fill="#4aa8f0"/><circle cx="16" cy="16" r="5" fill="#c9f0ff"/><path d="M16 4A12 12 0 0 1 28 16" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>',
 star:'<path d="M16 2L20 12H30L22 19L25 30L16 24L7 30L10 19L2 12H12Z" fill="#ffd23f"/><path d="M12 12L16 6" stroke="#fff" stroke-width="2" fill="none"/>',
 sparkle:'<path d="M16 2Q17 15 30 16Q17 17 16 30Q15 17 2 16Q15 15 16 2Z" fill="#ffd23f"/>',
+trophy:'<path d="M9 4H23V13C23 18 20 21 16 21C12 21 9 18 9 13Z" fill="#ffd23f"/><path d="M9 7H4C4 13 7 15 10 15M23 7H28C28 13 25 15 22 15" fill="none" stroke-width="2.4"/><path d="M14 21H18V25H14Z" fill="#c98a10"/><path d="M9 29V26H23V29Z" fill="#c98a10"/>',
 cloud:'<path d="M9 25C3 25 2 17 8 16C8 9 18 8 20 14C26 12 30 20 25 25Z" fill="#fff"/>',
 donut:'<circle cx="16" cy="16" r="13" fill="#e0a24f"/><path fill-rule="evenodd" d="M16 5a11 11 0 1 0 .01 0ZM16 12a4 4 0 1 1-.01 0Z" fill="#ff8fb8" stroke-width="1.5"/><path d="M9 11l2 1.5M21 9l2 2M22 20l2-1.5M11 22l-2-2M14 7l1 2" stroke="#fff" stroke-width="1.6" fill="none"/>',
 cupcake:'<path d="M7 16H25L22 29H10Z" fill="#ff5a4d"/><path d="M6 17C3 10 10 9 10 7C12 3 20 3 22 7C22 9 29 10 26 17Z" fill="#ffb3d1"/><circle cx="16" cy="4.5" r="2.4" fill="#d81b3c" stroke-width="1.5"/>',
@@ -226,7 +250,7 @@ const B=[["Crumb Spoon",15,1,"spoon"],["Oven",100,6,"flame"],["Bakery",1100,40,"
 const CU=[["Strong Fingers",50],["Butter Hands",500],["Sugar Fist",5000],["Choco Click",50000],["Diamond Fingers",500000]];
 const GU=[["Better Recipes",2000],["Spice Blend",100000],["Secret Ingredient",4e6],["Galactic Dough",2e8]];
 const rbCost=()=>1e6*Math.pow(3,S.rebirths);
-let S={c:0,run:0,all:0,b:B.map(()=>0),cu:0,gu:0,rp:0,rebirths:0};
+let S={c:0,run:0,all:0,b:B.map(()=>0),cu:0,gu:0,rp:0,rebirths:0,mc:0,mk:0};
 try{const l=store.get("cc");if(l)S=Object.assign(S,JSON.parse(l))}catch(e){}
 const rbMult=()=>1+S.rp;
 const cost=i=>Math.floor(B[i][1]*Math.pow(1.12,S.b[i]));
@@ -265,10 +289,10 @@ $("#rebirth").onclick=()=>{const g=rbGain();if(g<1)return;
  rbArm=0;S.rp+=g;S.rebirths++;S.c=0;S.run=0;S.b=B.map(()=>0);S.cu=0;S.gu=0;save(1);render()};
 $("#reset").onclick=()=>{
  if(Date.now()>rsArm){rsArm=Date.now()+4000;$("#reset").textContent="Click again to delete";setTimeout(()=>$("#reset").textContent="Delete save",4000);return}
- rsArm=0;S={c:0,run:0,all:0,b:B.map(()=>0),cu:0,gu:0,rp:0,rebirths:0};$("#reset").textContent="Delete save";save(1);render()};
+ rsArm=0;S={c:0,run:0,all:0,b:B.map(()=>0),cu:0,gu:0,rp:0,rebirths:0,mc:0,mk:0};$("#reset").textContent="Delete save";save(1);render()};
 function save(f){store.set("cc",JSON.stringify(S));pushCloud(f)}
 let last=Date.now();
-setInterval(()=>{const n=Date.now(),d=(n-last)/1000;last=n;add(cps()*d);render()},250);
+setInterval(()=>{const n=Date.now(),d=(n-last)/1000;last=n;add(cps()*d);S.mc=Math.max(S.mc||0,cps());S.mk=Math.max(S.mk||0,clickPow());render()},250);
 setInterval(save,5000);
 // Golden star
 function golden(){
@@ -284,13 +308,13 @@ render();
 const FIREBASE_CONFIG={apiKey:"AIzaSyCO3qEVyIRyxTQAb7I8ytiAvI6vRxSqO00",authDomain:"crumbclicker.firebaseapp.com",projectId:"crumbclicker",storageBucket:"crumbclicker.firebasestorage.app",messagingSenderId:"566011859684",appId:"1:566011859684:web:b5afa738bd26a8662a92f1"};
 const noCfg=()=>FIREBASE_CONFIG.apiKey.startsWith("YOUR");
 let cloud=null,cloudP=null,lastPush=0,delArm=0;
-const DEF=()=>({c:0,run:0,all:0,b:B.map(()=>0),cu:0,gu:0,rp:0,rebirths:0});
+const DEF=()=>({c:0,run:0,all:0,b:B.map(()=>0),cu:0,gu:0,rp:0,rebirths:0,mc:0,mk:0});
 function status(t){const e=$("#cst");if(e)e.textContent=t}
 function loadSDK(){return cloudP||(cloudP=new Promise((res,rej)=>{
  const u="https://www.gstatic.com/firebasejs/10.12.2/firebase-";
  const ld=n=>new Promise((a,b)=>{const x=document.createElement("script");x.src=u+n+"-compat.js";x.onload=a;x.onerror=b;document.head.appendChild(x)});
  ld("app").then(()=>Promise.all([ld("auth"),ld("firestore")])).then(()=>{firebase.initializeApp(FIREBASE_CONFIG);firebase.auth().onAuthStateChanged(onUser);res()}).catch(e=>{cloudP=null;rej(e)})}))}
-function acct(){const a=$("#acct");
+function acct(){lbSync();const a=$("#acct");
  if(cloud){a.innerHTML=`<span>${ic("cloud")} <b id="who"></b> · <span id="cst">Cloud save on</span></span><span><button class="btn" id="so">Sign out</button> <button class="btn" id="del">Delete cloud data</button></span>`;
   $("#who").textContent=cloud.user.displayName||cloud.user.email||"Player";
   $("#so").onclick=()=>firebase.auth().signOut();$("#del").onclick=delCloud}
@@ -303,18 +327,50 @@ async function signIn(){
   try{await firebase.auth().signInWithPopup(p)}catch(e){if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment")await firebase.auth().signInWithRedirect(p);else throw e}
  }catch(e){status("Sign-in failed: "+(e.code||e.message))}}
 async function onUser(u){
- if(!u){cloud=null;store.set("cloudOn","0");acct();return}
- store.set("cloudOn","1");cloud={user:u,db:firebase.firestore()};acct();
+ if(!u){cloud=null;lbOn=false;store.set("cloudOn","0");acct();return}
+ store.set("cloudOn","1");cloud={user:u,db:firebase.firestore()};acct();cloud.db.doc("leaderboard/"+u.uid).get().then(d=>{lbOn=d.exists;lbState()}).catch(()=>{});
  try{const d=await cloud.db.doc("users/"+u.uid).get();
   if(d.exists){const c=JSON.parse(d.data().save);
    if((c.rebirths||0)>S.rebirths||((c.rebirths||0)===S.rebirths&&(c.all||0)>S.all)){S=Object.assign(DEF(),c);store.set("cc",JSON.stringify(S));render();status("Cloud save loaded");return}}
   pushCloud(1)}catch(e){status("Could not reach the cloud")}}
 function pushCloud(f){
  if(!cloud||(!f&&Date.now()-lastPush<30000))return;lastPush=Date.now();
- cloud.db.doc("users/"+cloud.user.uid).set({save:JSON.stringify(S),rebirths:S.rebirths,all:Math.floor(S.all),updated:Date.now()}).then(()=>status("Cloud saved")).catch(()=>status("Cloud save failed"))}
+ cloud.db.doc("users/"+cloud.user.uid).set({save:JSON.stringify(S),rebirths:S.rebirths,all:Math.floor(S.all),updated:Date.now()}).then(()=>{status("Cloud saved");pushLB()}).catch(()=>status("Cloud save failed"))}
 async function delCloud(){
  const b=$("#del");if(Date.now()>delArm){delArm=Date.now()+4000;b.textContent="Click again to delete";setTimeout(()=>{if($("#del"))$("#del").textContent="Delete cloud data"},4000);return}
- delArm=0;try{await cloud.db.doc("users/"+cloud.user.uid).delete();await cloud.user.delete()}catch(e){await firebase.auth().signOut()}}
+ delArm=0;try{try{await cloud.db.doc("leaderboard/"+cloud.user.uid).delete()}catch(e){}await cloud.db.doc("users/"+cloud.user.uid).delete();await cloud.user.delete()}catch(e){await firebase.auth().signOut()}}
+// ===== Leaderboard (public entries: Google display name only, never the e-mail) =====
+const LBC=[["rebirths","Rebirths"],["all","Total crumbs"],["cps","Per second"],["cpc","Per click"]];
+let lbOn=false,lbCat="rebirths",lbBusy=0;
+const lbName=()=>String((cloud&&cloud.user.displayName)||"Player").slice(0,30);
+function pushLB(){if(!cloud||!lbOn)return Promise.resolve();
+ return cloud.db.doc("leaderboard/"+cloud.user.uid).set({name:lbName(),rebirths:S.rebirths,all:Math.floor(S.all),cps:Math.floor(S.mc||0),cpc:Math.floor(S.mk||0),updated:Date.now()}).catch(()=>{})}
+function lbSync(){lbState();if($("#lb").classList.contains("open"))loadLB()}
+function lbState(){const e=$("#lbst");if(!e)return;e.innerHTML="";$("#lbcat").style.display=cloud?"":"none";$("#lbl").style.display=cloud?"":"none";
+ const t=document.createElement("p");t.className="sub";const b=document.createElement("button");b.className="btn";
+ if(!cloud){t.textContent="Sign in with Google to see the leaderboard and compete with other players.";b.textContent="Sign in with Google";b.onclick=()=>signIn("google")}
+ else if(!lbOn){t.textContent="Join to appear with your Google name: "+lbName()+". Your e-mail address is never published.";b.textContent="Join leaderboard";b.onclick=()=>{lbOn=true;lbState();pushLB().then(loadLB)}}
+ else{t.textContent="You appear as "+lbName()+".";b.textContent="Leave leaderboard";b.onclick=()=>{cloud.db.doc("leaderboard/"+cloud.user.uid).delete().catch(()=>{}).then(()=>{lbOn=false;lbState();loadLB()})}}
+ e.append(t,b)}
+async function loadLB(){const ul=$("#lbl"),id=++lbBusy;ul.innerHTML="";if(!cloud)return;
+ const msg=t=>{ul.innerHTML="";const m=document.createElement("li");m.className="sub";m.textContent=t;ul.appendChild(m)};
+ msg("Loading …");
+ try{await loadSDK();const q=await firebase.firestore().collection("leaderboard").orderBy(lbCat,"desc").limit(25).get();
+  if(id!==lbBusy)return;if(q.empty){msg("No entries yet. Be the first!");return}
+  ul.innerHTML="";let i=0;
+  q.forEach(d=>{const x=d.data();i++;const row=document.createElement("li");
+   if(cloud&&d.id===cloud.user.uid)row.className="me";
+   const rk=document.createElement("span");rk.className="rk r"+(i<4?i:"n");rk.textContent=i;
+   const nm=document.createElement("span");nm.className="nm";nm.textContent=String(x.name||"Player").slice(0,30);
+   const v=document.createElement("b");v.textContent=fmt(Number(x[lbCat])||0);
+   row.append(rk,nm,v);ul.appendChild(row)})
+ }catch(e){if(id===lbBusy)msg("Could not load the leaderboard.")}}
+LBC.forEach(([k,n])=>{const b=document.createElement("button");b.className="btn lbc";b.textContent=n;b.setAttribute("aria-pressed",k===lbCat);
+ b.onclick=()=>{lbCat=k;document.querySelectorAll(".lbc").forEach(x=>x.setAttribute("aria-pressed",x===b));loadLB()};$("#lbcat").appendChild(b)});
+function lbOpen(o){$("#lb").classList.toggle("open",o);$("#lbtab").lastElementChild.textContent=o?"Close":"Top";$("#lbtab").setAttribute("aria-label",o?"Close leaderboard":"Open leaderboard");document.querySelector(".lbin").setAttribute("aria-hidden",!o);
+ if(o){lbState();pushLB().then(loadLB)}}
+$("#lbtab").onclick=()=>lbOpen(!$("#lb").classList.contains("open"));
+addEventListener("keydown",e=>{if(e.key==="Escape")lbOpen(false)});
 document.addEventListener("visibilitychange",()=>{if(document.hidden)save(1)});
 acct();if(store.get("cloudOn")==="1"&&!noCfg())loadSDK().catch(()=>status("Could not reach the cloud"));
 
