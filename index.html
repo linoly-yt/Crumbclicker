@@ -108,6 +108,20 @@ footer{text-align:center;padding:24px 14px;font-weight:700}
 #cb p{margin:0 auto 10px;max-width:800px;font-size:.9rem}
 #cb div{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Platformer: menu + level select */
+[hidden]{display:none!important}
+.pm{display:flex;flex-direction:column;align-items:center;gap:12px;padding:8px 0;text-align:center}
+.pcook{width:120px!important;height:120px!important;animation:bob 4s ease-in-out infinite;filter:drop-shadow(5px 6px 0 rgba(43,27,18,.35))}
+.btn.big{font-size:1.3rem;padding:12px 26px;min-width:260px}
+.psg{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:12px;max-width:640px;margin:14px auto}
+.lv{font:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border:3px solid var(--ink);border-radius:14px 18px 12px 16px;background:#fff;color:var(--ink);box-shadow:3px 3px 0 var(--ink);cursor:pointer}
+.lv b{font-size:1.6rem}
+.lv .ic{width:1.8em;height:1.8em}
+.lv:disabled{opacity:.55;cursor:not-allowed;box-shadow:none;background:#efe3c4}
+.lv:not(:disabled):hover{transform:translate(-1px,-2px);background:#fff3b8}
+.stars .ic{width:1em;height:1em}
+.stars i{opacity:.25;filter:grayscale(1);font-style:normal}
+.stars i.on{opacity:1;filter:none}
 </style>
 </head>
 <body>
@@ -148,11 +162,21 @@ footer{text-align:center;padding:24px 14px;font-weight:700}
 </section>
 
 <section id="plat" class="card">
-<h2>Cookie Run</h2>
-<p class="sub">3 levels: collect coins, stomp the grumpy blobs by landing on them, avoid spikes and reach the flag. Springs launch you high. <b>Keyboard:</b> arrows or A/D to move, Space, W or ↑ to jump, R restarts the level.</p>
+<div id="pmenu"><div class="pm">
+<span class="ic pcook" data-i="cookie"></span>
+<h2 style="margin:0;font-size:2.2rem">Cookie Run</h2>
+<p class="sub" id="pst"></p>
+<button class="btn big" id="pm-play" style="background:var(--grn)"><span class="ic" data-i="flag"></span> <span id="pm-pt">Play</span></button>
+<button class="btn big" id="pm-sel"><span class="ic" data-i="star"></span> Select level</button>
+<button class="btn big" id="pm-how"><span class="ic" data-i="card"></span> How to play</button>
+<p class="sub" id="phow" hidden style="max-width:460px">Collect coins, stomp the grumpy blobs by landing on them, avoid spikes and reach the flag. Springs launch you high.<br><b>Keyboard:</b> arrows or A/D to move, Space, W or ↑ to jump, R restarts, Esc opens the level select.<br><b>Stars:</b> 1 for finishing, 1 for 70% of the coins, 1 for no deaths.</p>
+</div></div>
+<div id="psel" hidden style="text-align:center"><h2>Select level</h2><p class="sub" id="pss"></p><div class="psg" id="psg"></div><button class="btn" id="psb">Back to menu</button></div>
+<div id="pgame" hidden>
+<p style="text-align:center"><button class="btn" id="pgm">Menu</button> <button class="btn" id="pgl">Levels</button> <button class="btn" id="pfr">Restart level</button></p>
 <canvas id="pf" class="gc" width="640" height="360" tabindex="0" aria-label="Cookie Run game"></canvas>
 <div class="pfp" id="pfpad"><div class="dir"><button class="pb" data-k="l" aria-label="Left"><i class="ar" data-r="0"></i></button><button class="pb" data-k="r" aria-label="Right"><i class="ar" data-r="180"></i></button></div><button class="pb jump" data-k="j">JUMP</button></div>
-<p style="text-align:center"><button class="btn" id="pfr">Restart level</button></p>
+</div>
 </section>
 
 <section id="snk" class="card">
@@ -400,10 +424,35 @@ rb.onclick=()=>{
 // ===== Platformer (Cookie Run) =====
 (function(){
 const cv=$("#pf"),g=cv.getContext("2d"),W=640,H=360,T=40,PW=26,PH=34,INK="#2b1b12";
-const LV=[
-{w:60,gaps:[[14,3],[28,3],[42,3]],blocks:[[10,5,3],[18,5,3],[32,5,3],[36,4,3],[46,5,4]],spikes:[22],enemies:[[38,6],[52,6]],springs:[],coins:[[24,6],[52,5]]},
-{w:75,gaps:[[12,3],[24,3],[38,3],[52,3],[64,3]],blocks:[[8,5,2],[15,5,3],[20,4,2],[28,5,3],[33,5,2],[41,5,3],[46,4,3],[56,5,3],[60,4,2],[68,5,4]],spikes:[18,31,44,59],enemies:[[21,6],[35,6],[48,6],[55,6]],springs:[],coins:[]},
-{w:90,gaps:[[10,3],[22,3],[34,3],[46,3],[58,3],[70,3],[80,3]],blocks:[[6,5,2],[14,5,3],[18,4,2],[26,5,3],[30,4,3],[38,5,2],[42,5,2],[50,5,3],[54,4,3],[62,5,3],[66,5,2],[74,5,3],[84,5,3]],spikes:[13,25,37,49,65,73],enemies:[[17,6],[29,6],[40,6],[53,6],[68,6],[77,6]],springs:[[20,6],[60,6]],coins:[[20,2],[21,1],[60,2],[61,1]]}];
+// 24 levels, generated from a fixed seed: tough from level 1, much tougher with every level (longer, denser, faster enemies)
+const LV=[];
+function mk(n){let s=n*7919+13;const R=()=>(s=s*16807%2147483647)/2147483647,d=n/23,tr=n/6|0;
+ const L={w:60+n*4,es:1.3+d*1.1,gaps:[],blocks:[],spikes:[],enemies:[],springs:[],coins:[]};
+ const F=["gap","spike","spikes","foe","plat"];
+ if(n>=3)F.push("gapspike","spring");
+ if(tr>=1)F.push("foes","platfoe","gapfoe");
+ if(tr>=2)F.push("trio","doublegap","gapspike");
+ if(tr>=3)F.push("mob","trio","doublegap","gapfoe");
+ const base=()=>Math.max(3,5-Math.round(d*2)+(R()*2|0));
+ const GW=()=>3+(R()<.15+d*.55?1:0)+(n>=20&&R()<.35?1:0);
+ let c=9,bag=[];const nx=()=>{if(!bag.length){bag=F.slice();for(let i=bag.length-1;i>0;i--){const j=R()*(i+1)|0;[bag[i],bag[j]]=[bag[j],bag[i]]}}return bag.pop()};
+ while(c<L.w-10){const f=nx();let x=1,g=GW();
+  if(f=="gap"){L.gaps.push([c,g]);x=g}
+  else if(f=="spike")L.spikes.push(c);
+  else if(f=="spikes"){L.spikes.push(c,c+1);x=2}
+  else if(f=="trio"){L.spikes.push(c,c+1,c+2);x=3}
+  else if(f=="foe")L.enemies.push([c,6]);
+  else if(f=="foes"){L.enemies.push([c,6],[c+3,6]);x=4}
+  else if(f=="mob"){L.enemies.push([c,6],[c+3,6],[c+6,6]);x=7}
+  else if(f=="plat"){L.blocks.push([c,5,3+(R()*2|0)]);x=3}
+  else if(f=="platfoe"){L.blocks.push([c,5,4]);L.enemies.push([c+1,4]);x=4}
+  else if(f=="spring"){L.springs.push([c,6]);L.coins.push([c+1,2],[c+2,1],[c+3,2]);x=3}
+  else if(f=="gapspike"){L.gaps.push([c,g]);L.spikes.push(c+g+3);x=g+4}
+  else if(f=="gapfoe"){L.gaps.push([c,g]);L.enemies.push([c+g+3,6]);x=g+4}
+  else if(f=="doublegap"){const g2=GW();L.gaps.push([c,g],[c+g+3,g2]);x=g+3+g2}
+  c+=base()+x}
+ return L}
+LV.length=0;for(let n=0;n<24;n++)LV.push(mk(n));
 let G,coins,en,parts=[],p,li=0,base=0,lc=0,deaths=0,st="play",cam=0,jb=0,coy=0,msgT=0,fl=0;
 const k={l:0,r:0,j:0},kd={},held={};
 const sol=(c,r)=>r<0?false:c<0||c>=G[0].length?true:r>=9?false:G[r][c]===1;
@@ -418,10 +467,10 @@ function load(n){const L=LV[n];G=[];for(let r=0;r<9;r++)G[r]=Array(L.w).fill(0);
  L.spikes.forEach(c=>G[6][c]=2);L.springs.forEach(([c,r])=>G[r][c]=3);
  coins=[];L.blocks.forEach(([c,r,n])=>{for(let i=0;i<n;i++)coins.push({x:c+i,y:r-1})});
  L.gaps.forEach(([c])=>coins.push({x:c+1,y:5}));L.coins.forEach(([x,y])=>coins.push({x,y}));
- en=L.enemies.map(([c,r])=>({x:c*T+5,y:(r+1)*T-30,vx:1.2,dead:0}));
+ en=L.enemies.map(([c,r])=>({x:c*T+5,y:(r+1)*T-30,vx:L.es||1.2,dead:0}));
  lc=0;parts=[];cam=0;spawn()}
 function die(){deaths++;fl=12;burst(p.x+13,p.y+17,16,"#e0a24f");spawn()}
-function advance(){if(st==="win"){base+=lc;li++;load(li);st="play"}else if(st==="done"){li=0;base=0;deaths=0;load(0);st="play"}}
+function advance(){if(st==="win")start(li+1);else if(st==="done")show("sel")}
 function step(){
  if(st!=="play"){msgT++;if(jb>0&&msgT>40){jb=0;advance()}jb--;return}
  msgT=0;const ax=k.r-k.l;
@@ -442,14 +491,15 @@ function step(){
   if(sol(ah,rw)||(G[rw]&&G[rw][ah]===2)||!sol(ah,rf))e.vx=-e.vx;else e.x=nx;
   if(p.x<e.x+30&&p.x+PW>e.x&&p.y<e.y+30&&p.y+PH>e.y){
    if(p.vy>0&&p.y+PH-p.vy<=e.y+14){e.dead=1;p.vy=k.j?-12:-8;burst(e.x+15,e.y+20,10,"#b05be0")}else return die()}}
- if(p.x>(G[0].length-3)*T){st=li===LV.length-1?"done":"win";msgT=0}
+ if(p.x>(G[0].length-3)*T){st=li===LV.length-1?"done":"win";msgT=0;finish()}
  for(const q of parts){q.x+=q.vx;q.y+=q.vy;q.vy+=.3;q.l--}parts=parts.filter(q=>q.l>0);
 }
-// Level themes: day, sunset, night
+// Level themes: day, sunset, night, snow (cycle through the levels)
 const TH=[
 {a:"#6cc8f2",b:"#e8f9ff",hill:["#9bdc8c","#6cc36f"],top:"#5fd068",dirt:"#a5682a",dk:"#7d4a1c"},
 {a:"#ff8a5c",b:"#ffe3a3",hill:["#e58f7a","#c96f6f"],top:"#a8c94a",dirt:"#94582a",dk:"#6b3a1c"},
-{a:"#141a48",b:"#5a4a9e",hill:["#3a3a80","#2b2b66"],top:"#4aa8a0",dirt:"#5a4470",dk:"#3c2c52"}];
+{a:"#141a48",b:"#5a4a9e",hill:["#3a3a80","#2b2b66"],top:"#4aa8a0",dirt:"#5a4470",dk:"#3c2c52"},
+{a:"#a9dcf5",b:"#fff",hill:["#dff1fb","#bcdff2"],top:"#f6fcff",dirt:"#7a93b0",dk:"#52688a"}];
 // 3D coin: spins around its vertical axis, shows a thick edge, rim, slot and shine
 function coin3d(cx,cy,R,a){
  const w=Math.max(1.5,R*Math.abs(Math.cos(a))),e=R*.4*Math.sin(a);
@@ -470,14 +520,44 @@ const D=7;
 function ext(x,y,w,h,col,fl){g.fillStyle=col;
  if(!fl||fl[1]){g.beginPath();g.moveTo(x+w,y);g.lineTo(x+w+D,y+D);g.lineTo(x+w+D,y+h+D);g.lineTo(x+w,y+h);g.closePath();g.fill();g.stroke()}
  if(!fl||fl[2]){g.beginPath();g.moveTo(x,y+h);g.lineTo(x+D,y+h+D);g.lineTo(x+w+D,y+h+D);g.lineTo(x+w,y+h);g.closePath();g.fill();g.stroke()}}
+// Beautiful sun / moon: soft glow, slowly turning rays, a happy face
+function glow(x,y,r,c,a){const q=g.createRadialGradient(x,y,r*.08,x,y,r);q.addColorStop(0,"rgba("+c+","+a+")");q.addColorStop(1,"rgba("+c+",0)");g.fillStyle=q;g.fillRect(x-r,y-r,2*r,2*r)}
+function sun(now,k){
+ const P=[{x:540,y:76,R:32,b:"#ffd23f",i:"#ffe985",l:"#ffb21f",c:"255,238,150"},
+  {x:500,y:178,R:44,b:"#ff9a3c",i:"#ffc266",l:"#ff5f2e",c:"255,160,80"},0,
+  {x:540,y:76,R:30,b:"#fff3b0",i:"#fffbe0",l:"#ffd870",c:"255,255,255"}][k];
+ const x=P.x,y=P.y,R=P.R,pu=1+Math.sin(now/700)*.05;
+ glow(x,y,R*5.2*pu,P.c,.55);glow(x,y,R*2.6,P.c,.8);
+ g.save();g.translate(x,y);g.lineJoin="round";g.lineCap="round";g.strokeStyle=INK;g.lineWidth=3;
+ g.rotate(now/5000);
+ for(let i=0;i<16;i++){const lg=i%2===0,a=i*Math.PI/8,L=lg?R*.78:R*.42,hw=lg?R*.2:R*.15,r0=R*1.12;
+  g.save();g.rotate(a);g.fillStyle=lg?P.l:P.b;
+  g.beginPath();g.moveTo(r0,-hw);g.quadraticCurveTo(r0+L*.6,-hw*.9,r0+L,0);g.quadraticCurveTo(r0+L*.6,hw*.9,r0,hw);g.closePath();g.fill();g.stroke();g.restore()}
+ g.restore();
+ g.save();g.translate(x,y);g.lineJoin="round";g.lineCap="round";g.strokeStyle=INK;g.lineWidth=3.5;
+ g.fillStyle=P.b;g.beginPath();g.arc(0,0,R,0,7);g.fill();g.stroke();
+ g.fillStyle=P.i;g.beginPath();g.arc(-R*.1,-R*.12,R*.74,0,7);g.fill();
+ g.strokeStyle="rgba(255,255,255,.95)";g.lineWidth=4;g.beginPath();g.arc(0,0,R*.84,3.55,4.35);g.stroke();
+ g.strokeStyle=INK;g.lineWidth=2.4;
+ const bl=now%4200<150?.12:1;
+ for(const o of[-1,1]){g.fillStyle=INK;g.beginPath();g.ellipse(o*R*.36,-R*.08,R*.1,R*.16*bl,0,0,7);g.fill();
+  if(bl>.5){g.fillStyle="#fff";g.beginPath();g.arc(o*R*.36-R*.03,-R*.14,R*.04,0,7);g.fill()}
+  g.fillStyle="rgba(255,110,110,.55)";g.beginPath();g.ellipse(o*R*.58,R*.2,R*.15,R*.1,0,0,7);g.fill()}
+ g.beginPath();g.arc(0,R*.1,R*.34,.3,Math.PI-.3);g.stroke();
+ g.restore()}
+function moon(now){
+ glow(540,76,150,"190,205,255",.5);glow(540,76,70,"230,235,255",.8);
+ g.lineWidth=3;g.strokeStyle=INK;g.fillStyle="#fff6dc";g.beginPath();g.arc(540,76,27,0,7);g.fill();g.stroke();
+ g.fillStyle="#e6dcc0";for(const c of[[-8,-7,6],[9,3,5],[-3,11,3.5],[10,-11,2.5]]){g.beginPath();g.arc(540+c[0],76+c[1],c[2],0,7);g.fill()}
+ g.strokeStyle="rgba(255,255,255,.95)";g.lineWidth=3.5;g.lineCap="round";g.beginPath();g.arc(540,76,21,3.5,4.3);g.stroke()}
 function draw(){
- const th=TH[li],LW=G[0].length,now=Date.now(),sh=fl>0?(Math.random()-.5)*fl:0;fl=Math.max(0,fl-1);
+ const th=TH[li%4],LW=G[0].length,now=Date.now(),sh=fl>0?(Math.random()-.5)*fl:0;fl=Math.max(0,fl-1);
  cam+=(Math.max(0,Math.min(p.x-260,LW*T-W))-cam)*.15;
  g.fillStyle=th.a;g.fillRect(0,0,W,H);
- if(li===2){g.fillStyle="#fff";for(let i=0;i<40;i++){g.globalAlpha=.4+.6*Math.abs(Math.sin(now/700+i));g.fillRect((((i*97-cam*.1)%W)+W)%W,(i*53)%200,2,2)}g.globalAlpha=1}
- g.lineWidth=3;g.strokeStyle=INK;g.fillStyle=li===2?"#fff6dc":"#fff2a8";g.beginPath();g.arc(530,68,li===2?24:34,0,7);g.fill();g.stroke();
+ if(li%4===2){g.fillStyle="#fff";for(let i=0;i<40;i++){g.globalAlpha=.4+.6*Math.abs(Math.sin(now/700+i));g.fillRect((((i*97-cam*.1)%W)+W)%W,(i*53)%200,2,2)}g.globalAlpha=1}
+ if(li%4===2)moon(now);else sun(now,li%4);
  for(let j=0;j<2;j++){g.fillStyle=th.hill[j];g.beginPath();g.moveTo(0,H);for(let x=0;x<=W;x+=16)g.lineTo(x,235+j*38-Math.sin((x+cam*(.25+.2*j))/(70+j*30))*(28-j*8));g.lineTo(W,H);g.fill()}
- g.fillStyle=li===2?"rgba(255,255,255,.16)":"#fff";
+ g.fillStyle=li%4===2?"rgba(255,255,255,.16)":"#fff";
  for(let i=0;i<7;i++){const x=(((i*330-cam*.4)%1000)+1000)%1000-120,y=40+(i*47)%110;g.beginPath();g.arc(x,y,24,0,7);g.arc(x+26,y+6,20,0,7);g.arc(x-24,y+8,18,0,7);g.fill()}
  g.save();g.translate(-Math.round(cam)+sh,0);g.lineWidth=3;g.strokeStyle=INK;g.lineCap="round";g.lineJoin="round";
  const c1=Math.floor(cam/T);
@@ -540,16 +620,16 @@ function draw(){
   g.textAlign="center";g.fillStyle=INK;
   g.font="bold 28px sans-serif";g.fillText(st==="win"?"Level "+(li+1)+" complete!":"You finished all levels!",W/2,172);
   g.font="18px sans-serif";g.fillText(st==="win"?"Coins so far: "+(base+lc):"Coins: "+(base+lc)+" · Deaths: "+deaths,W/2,200);
-  g.fillText("Tap the game, press Enter or Jump to "+(st==="win"?"continue":"play again"),W/2,228)}
+  g.fillText("Tap the game, press Enter or Jump to "+(st==="win"?"continue":"go to the menu"),W/2,228)}
 }
 let last=0,acc=0;
 function loop(ts){requestAnimationFrame(loop);
- if(!$("#plat").classList.contains("on")){last=ts;return}
+ if(!inG()){last=ts;return}
  acc+=Math.min(ts-last,100);last=ts;while(acc>=16.67){step();acc-=16.67}draw()}
 const KM={ArrowLeft:"l",KeyA:"l",ArrowRight:"r",KeyD:"r",ArrowUp:"j",KeyW:"j",Space:"j"};
 function calc(){const n={l:0,r:0,j:0};for(const c in kd)if(kd[c])n[KM[c]]=1;for(const id in held)if(held[id])n[held[id]]=1;
  if(n.j&&!k.j)jb=8;Object.assign(k,n);document.querySelectorAll("#pfpad .pb").forEach(b=>b.classList.toggle("on",!!k[b.dataset.k]))}
-addEventListener("keydown",e=>{if(!$("#plat").classList.contains("on"))return;
+addEventListener("keydown",e=>{if(!inG())return;if(e.code==="Escape"){show("sel");return}
  if(e.code==="KeyR"){load(li);st="play";return}
  if(e.code==="Enter"&&st!=="play"){advance();return}
  if(KM[e.code]){e.preventDefault();if(document.activeElement&&document.activeElement.tagName==="BUTTON")document.activeElement.blur();kd[e.code]=1;calc()}});
@@ -563,7 +643,30 @@ pad.addEventListener("pointermove",e=>{if(e.pointerId in held)upd(e)});
 pad.addEventListener("contextmenu",e=>e.preventDefault());
 cv.addEventListener("pointerdown",()=>{cv.focus({preventScroll:true});if(st!=="play"&&msgT>40)advance()});
 $("#pfr").onclick=()=>{load(li);st="play"};
-load(0);requestAnimationFrame(loop);
+// ----- menu, level select, progress (saved in this browser) -----
+IC.lock='<rect x="7" y="14" width="18" height="14" rx="3" fill="#a0a7b3"/><path d="M11 14V10a5 5 0 0 1 10 0V14" fill="none" stroke-width="3"/>';
+let P={u:1,s:{},c:{}};try{Object.assign(P,JSON.parse(store.get("pfp")||"{}"))}catch(e){}
+const inG=()=>$("#plat").classList.contains("on")&&!$("#pgame").hidden;
+const sum=()=>Object.values(P.s).reduce((a,b)=>a+b,0);
+function start(n){li=n;base=0;deaths=0;load(n);st="play";show("game")}
+function finish(){const s=1+(lc>=Math.ceil(coins.length*.7)?1:0)+(deaths===0?1:0);
+ P.s[li]=Math.max(P.s[li]||0,s);P.c[li]=Math.max(P.c[li]||0,lc);
+ P.u=Math.max(P.u,Math.min(li+2,LV.length));store.set("pfp",JSON.stringify(P))}
+function show(v){["menu","sel","game"].forEach(x=>$("#p"+x).hidden=x!==v);
+ if(v==="menu")buildMenu();if(v==="sel")buildSel();if(v==="game")cv.focus({preventScroll:true});
+ for(const c in kd)kd[c]=0;for(const id in held)delete held[id];calc()}
+function buildMenu(){const n=Math.min(P.u,LV.length);
+ $("#pm-pt").textContent=P.u>1||sum()?"Continue (Level "+n+")":"Play";
+ $("#pst").textContent="Levels unlocked: "+n+"/"+LV.length+" · Stars: "+sum()+"/"+LV.length*3}
+function buildSel(){$("#pss").textContent="Stars: "+sum()+"/"+LV.length*3;
+ $("#psg").innerHTML=LV.map((_,n)=>{const lk=n>=P.u,s=P.s[n]||0;
+  return `<button class="lv" data-n="${n}" ${lk?"disabled":""}>${lk?ic("lock"):"<b>"+(n+1)+"</b>"}<span class="stars">${[1,2,3].map(i=>`<i class="${i<=s?"on":""}">${ic("star")}</i>`).join("")}</span></button>`}).join("")}
+$("#pm-play").onclick=()=>start(Math.min(P.u-1,LV.length-1));
+$("#pm-sel").onclick=()=>show("sel");
+$("#pm-how").onclick=()=>{const h=$("#phow");h.hidden=!h.hidden};
+$("#psg").onclick=e=>{const b=e.target.closest("[data-n]");if(b&&!b.disabled)start(+b.dataset.n)};
+$("#psb").onclick=()=>show("menu");$("#pgm").onclick=()=>show("menu");$("#pgl").onclick=()=>show("sel");
+load(0);show("menu");requestAnimationFrame(loop);
 })();
 
 // ===== Snake =====
